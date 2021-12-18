@@ -28,8 +28,12 @@ router.put('/:id', async (req, res) => {
 
 // DELETE EVENT
 router.delete('/:id', async (req, res) => {
-	const deleteEvent = await Event.findByIdAndDelete(req.params.id);
-	res.status(204).json({ status: 204, deleteEvent: deleteEvent });
+  // // findByIdAndDelete is not returning anything.
+	// const deleteEvent = await Event.findByIdAndDelete(req.params.id);
+	// res.status(204).json({ status: 204, deleteEvent: deleteEvent });
+  
+	await Event.findByIdAndDelete(req.params.id);
+	res.status(204).json({ status: 204 });
 });
 
 // LIKE EVENT

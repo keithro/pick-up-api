@@ -23,9 +23,12 @@ app.use(morgan('combined'));
 app.get('/', (req, res)=>{
   // console.log('REQUEST: ', req)
   // console.log('RESPONSE: ', res)
-  res.send('<h1>HOLA PINCHE MUNDO!</h1>');
+  res.send('<h1>HOLA MUNDO!</h1>');
   // res.redirect('/events')
 });
+
+const usersController = require('./controllers/usersController');
+app.use('/users', usersController);
 
 const eventsController = require('./controllers/eventsController');
 app.use('/events', eventsController);
