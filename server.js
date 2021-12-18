@@ -24,7 +24,11 @@ app.get('/', (req, res)=>{
   // console.log('REQUEST: ', req)
   // console.log('RESPONSE: ', res)
   res.send('<h1>HOLA PINCHE MUNDO!</h1>');
+  // res.redirect('/events')
 });
+
+const eventsController = require('./controllers/eventsController');
+app.use('/events', eventsController);
 
 
 // ACTIVATE THE SERVER TO LISTEN ON THE PORT
