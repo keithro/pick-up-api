@@ -3,6 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
+const usersController = require('./controllers/usersController');
+const eventsController = require('./controllers/eventsController');
 
 // CREATE A NEW INSTANCE OF EXPRESS
 const app = express();
@@ -27,10 +29,8 @@ app.get('/', (req, res)=>{
   // res.redirect('/events')
 });
 
-const usersController = require('./controllers/usersController');
 app.use('/users', usersController);
 
-const eventsController = require('./controllers/eventsController');
 app.use('/events', eventsController);
 
 

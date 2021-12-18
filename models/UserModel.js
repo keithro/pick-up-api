@@ -23,14 +23,18 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  // followers: {
-  //   type: Array,
-  //   default: [],
-  // },
-  // followings: {
-  //   type: Array,
-  //   default: [],
-  // },
+  followers: {
+    type: Array,
+    default: [],
+  },
+  followings: {
+    type: Array,
+    default: [],
+  },
+  invites: {
+    type: Array,
+    default: [],
+  },
   isAdmin: {
     type: Boolean,
     default: false,

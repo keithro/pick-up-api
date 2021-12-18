@@ -28,12 +28,13 @@ router.put('/:id', async (req, res) => {
 
 // DELETE EVENT
 router.delete('/:id', async (req, res) => {
-  // // findByIdAndDelete is not returning anything.
-	// const deleteEvent = await Event.findByIdAndDelete(req.params.id);
-	// res.status(204).json({ status: 204, deleteEvent: deleteEvent });
+	const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+  console.log(deletedEvent)
+	res.status(200).json({ status: 200, deletedEvent: deletedEvent });
   
-	await Event.findByIdAndDelete(req.params.id);
-	res.status(204).json({ status: 204 });
+  // // If you decide not to return any data use:
+	// await Event.findByIdAndDelete(req.params.id);
+	// res.status(204).json({ status: 204 });
 });
 
 // LIKE EVENT
