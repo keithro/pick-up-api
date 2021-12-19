@@ -16,15 +16,13 @@ const PORT = process.env.PORT;
 app.use(cors());
 // Parses incoming URL-encoded data:
 app.use(express.urlencoded({ extended: false }));
-// Parses incoming JSON-encoded data:
+// Parses incoming JSON-encoded data from req.body:
 app.use(express.json());
 app.use(morgan('combined'));
 
 
 // ROUTES
 app.get('/', (req, res)=>{
-  // console.log('REQUEST: ', req)
-  // console.log('RESPONSE: ', res)
   res.send('<h1>HOLA MUNDO!</h1>');
   // res.redirect('/events')
 });
