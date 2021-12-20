@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const usersController = require('./controllers/usersController');
 const eventsController = require('./controllers/eventsController');
+const authController = require('./controllers/authController');
 
 // CREATE A NEW INSTANCE OF EXPRESS
 const app = express();
@@ -28,8 +29,8 @@ app.get('/', (req, res)=>{
 });
 
 app.use('/users', usersController);
-
 app.use('/events', eventsController);
+app.use('/auth', authController);
 
 
 // ACTIVATE THE SERVER TO LISTEN ON THE PORT

@@ -5,8 +5,8 @@ const User = require('../models/UserModel');
 
 
 router.get('/', (req, res) => {
-  console.log('User page')
-  res.send('<h1>Welcome to the User page!</h1>')
+  console.log('User page');
+  res.send('<h1>Welcome to the User page!</h1>');
 });
 
 // REGISTER NEW USER
@@ -23,9 +23,9 @@ router.post('/register', async (req, res) => {
       password: hashedPassword,
     });
     const user = await newUser.save();
-    res.status(201).json(user)
+    res.status(201).json(user);
   } catch (err) {
-    res.status(500).json(err)
+    res.status(500).json(err);
   }
 });
 
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
 
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json(err)
+    res.status(500).json(err);
   }
 });
 

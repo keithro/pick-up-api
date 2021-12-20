@@ -3,7 +3,7 @@ const mongoose = require('../db/connection');
 const eventSchema = new mongoose.Schema({
   // Add user's id after model is created
   creator: String,
-  desc:   {
+  description:   {
 		type: String,
 		required: true,
     maxLength: 1000,

@@ -17,9 +17,10 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    min: 6,
+    min: 8,
   },
-  profilePicture: {
+  // change to 'avatar' ?
+  avatar: {
     type: String,
     default: "",
   },
@@ -35,7 +36,7 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-  isAdmin: {
+  admin: {
     type: Boolean,
     default: false,
   },
