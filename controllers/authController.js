@@ -5,12 +5,28 @@ const jwt = require('jsonwebtoken');
 const gravatar = require('gravatar');
 const config = require('config');
 const { check, validationResult } = require('express-validator');
+const auth = require('../middleware/auth');
 const User = require('../models/UserModel');
 
 const { JWT_SECRET_KEY } = config;
 // REFACTOR JWT SECRET KEY?
 // // use .env file, pass in process.env.JWT_SECRET_KEY, and add:
 // require('dotenv').config();
+
+// GET AUTHORIZE USER
+router.get('/', auth, async (req, res) => {
+  try {
+    console.log('USER FROM MIDDLEWARE: ' ,req.user);
+    console.log('USER ID FROM MIDDLEWARE: ' ,req.user.id);
+    // using the user from the jwt decoded in middleware
+    const user = await User.findById(req.user.id).select('-password');
+    console.log('FOUND USER: ' ,user);
+    return res.json(user);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ msg: 'Server error' })
+  }
+});
 
 // CREATE NEW USER
 router.post('/register', [
@@ -54,8 +70,7 @@ router.post('/register', [
         id: newUser.id,
         admin: newUser.admin
       }
-    }
-    // jwt.sign(payload, config.get('jwtSecretKey'), { expiresIn: '14d' }, (err, token) => {
+    };
     jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
       if (err) throw err;
       res.status(201).json({ token })
@@ -64,6 +79,7 @@ router.post('/register', [
   } catch (err) {
     console.log('Error: ', err.message);
     res.status(500).json({ msg: 'Server error' });
+    // TODO: Do these errors need to be in same format?
     // res.status(500).json({ errors: [{ msg: 'Server error', param: ''}] });
   }
 });
