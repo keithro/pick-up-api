@@ -7,6 +7,11 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/UserModel');
 
+const { JWT_SECRET_KEY } = config;
+// REFACTOR JWT SECRET KEY?
+// // use .env file, pass in process.env.JWT_SECRET_KEY, and add:
+// require('dotenv').config();
+
 // CREATE NEW USER
 router.post('/register', [
   check('username', 'Name is required').not().isEmpty(),
@@ -37,7 +42,7 @@ router.post('/register', [
     // Create new User
     newUser = new User ({ username, email: email.toLowerCase(), avatar });
 
-    // Encrypt password
+    // Encrypt password & add to user
     const salt = await bcrypt.genSalt(12);
     newUser.password = await bcrypt.hash(password, salt);
 
@@ -47,10 +52,11 @@ router.post('/register', [
     const payload = {
       user: {
         id: newUser.id,
-        // admin: newUser.admin
+        admin: newUser.admin
       }
     }
-    jwt.sign(payload, config.get('jwtSecret'), { expiresIn: '14d' }, (err, token) => {
+    // jwt.sign(payload, config.get('jwtSecretKey'), { expiresIn: '14d' }, (err, token) => {
+    jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
       if (err) throw err;
       res.status(201).json({ token })
     })
