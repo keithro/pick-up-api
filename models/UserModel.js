@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     min: 8,
   },
-  // change to 'avatar' ?
   avatar: {
     type: String,
     default: "",

@@ -24,11 +24,9 @@ router.get('/', auth, async (req, res) => {
     return res.json(user);
   } catch (err) {
     console.log(err.message);
-    res.status(500).json({ msg: 'Server error' })
+    res.status(500).json({ errors: { msg: 'Server error' } });
   }
 });
-
-// LOGIN AND GET TOKEN
 
 
 // CREATE NEW USER AND GET TOKEN (public)
@@ -45,14 +43,15 @@ router.post('/register', [
     return res.status(400).json({ errors: errors.array() });
   };
   if (password !== passwordCheck) {
-    return res.status(400).json({ errors: [{ msg: 'Passwords do not match', param: 'password'}] })
+    return res.status(400).json({ errors: { msg: 'Invalid user or password'} });
   }
 
   try {
     // Check if user exists
+    const foundUserName = await User.findOne({ username: username });
     const foundUser = await User.findOne({ email: email.toLowerCase() });
-    if (foundUser) {
-      return res.status(400).json({ errors: [{ msg: 'User already exists', param: 'email'}] })
+    if (foundUser || foundUserName) {
+      return res.status(400).json({ errors: { msg: 'User already exists'} });
     };
 
     // Get gravatar if exist or default image (size, rating, default)
@@ -81,9 +80,53 @@ router.post('/register', [
   
   } catch (err) {
     console.log('Error: ', err.message);
-    res.status(500).json({ msg: 'Server error' });
-    // TODO: Do these errors need to be in same format?
-    // res.status(500).json({ errors: [{ msg: 'Server error', param: ''}] });
+    res.status(500).json({ errors: { msg: 'Server error' } });
+  }
+});
+
+
+// LOGIN AND GET TOKEN
+router.post('/login', [
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password must be 8 or more characters').isLength({ min: 6 })
+], async (req, res) => {
+  const { email, password } = req.body;
+  
+  // Validate user data and send errors array if any.
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  };
+
+  try {
+    // Check if user exists
+    const foundUser = await User.findOne({ email: email.toLowerCase() });
+    if (!foundUser) {
+      return res.status(400).json({ errors: { msg: 'Invalid user or password' } });
+    };
+    
+    // Compare password on db to pw provided
+    const isMatch = await bcrypt.compare(password, foundUser.password);
+    if (!isMatch) {
+      return res.status(400).json({ errors: { msg: 'Invalid user or password' } });
+    }
+
+    // Create and return jsonwebtoken
+    const payload = {
+      user: {
+        id: foundUser.id,
+        admin: foundUser.admin
+      }
+    };
+    jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
+      if (err) throw err;
+      console.log('Success!!!!!!!!!!!!!!!!!!!!!')
+      res.status(201).json({ token })
+    })
+  
+  } catch (err) {
+    console.log('Error: ', err.message);
+    res.status(500).json({ errors: { msg: 'Server error' } });
   }
 });
 
