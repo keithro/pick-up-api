@@ -13,7 +13,7 @@ const { JWT_SECRET_KEY } = config;
 // // use .env file, pass in process.env.JWT_SECRET_KEY, and add:
 // require('dotenv').config();
 
-// GET AUTHORIZE USER
+// GET AUTHORIZE USER (private)
 router.get('/', auth, async (req, res) => {
   try {
     console.log('USER FROM MIDDLEWARE: ' ,req.user);
@@ -28,7 +28,10 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// CREATE NEW USER
+// LOGIN AND GET TOKEN
+
+
+// CREATE NEW USER AND GET TOKEN (public)
 router.post('/register', [
   check('username', 'Name is required').not().isEmpty(),
   check('email', 'Please include a valid email').isEmail(),
