@@ -16,5 +16,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
+/old-files
 
 npm-debug.log*

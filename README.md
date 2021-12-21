@@ -16,3 +16,6 @@
 | PUT | /events/:id/like | Like Event| Users can like any event | Yes |
 | PUT | /events/:id/comment | Like Event| Users can like any event | Yes |
 | PUT | /events/:id/join | Like Event| Users can like any event | Yes |
+
+Todo:
+- add param to error msg so you can add conditional styling to form labels

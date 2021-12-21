@@ -1,54 +1,32 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcrypt');
+const auth = require('../middleware/auth');
 const User = require('../models/UserModel');
 
-
-router.get('/', (req, res) => {
-  console.log('User page');
-  res.send('<h1>Welcome to the User page!</h1>');
-});
-
-// REGISTER NEW USER
-router.post('/register', async (req, res) => {
+// '/profile' or just '/' ?
+// Isnt' this the same as GET /auth/
+router.get('/profile', auth, async (req, res) => {
   try {
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-    // Create new user
-    const newUser = new User({
-      username: req.body.username,
-      email: req.body.email,
-      password: hashedPassword,
-    });
-    const user = await newUser.save();
-    res.status(201).json(user);
+    // using the user info from the jwt decoded in middleware (minus the pw field)
+    const user = await User.findById(req.user.id).select('-password');
+    return res.json(user);
   } catch (err) {
-    res.status(500).json(err);
+    console.log(err.message);
+    res.status(500).json({ errors: { msg: 'Server error' } });
   }
 });
 
-// USER LOGIN
-router.post('/login', async (req, res) => {
+// Update User
+router.put('/profile', auth, async (req, res) => {
   try {
-    // Find user by email
-    const user = await User.findOne({ email: req.body.email });
-    !user && res.status(404).json('user not found');
-
-    // Compare password and return user if correct
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
-    !validPassword && res.status(400).json('wrong password'); 
-
-    res.status(200).json(user);
+    const updatedOwner = await Owner.findByIdAndUpdate(req.user.id, req.body, { new: true, });
+    return res.status(200).json(updatedOwner);
   } catch (err) {
-    res.status(500).json(err);
+    console.error(err.message);
+    return res.status(500).send('Server Error');
   }
 });
 
-// USER UPDATE
-
-
-// USER DELETE
+// Delete User
 
 module.exports = router;

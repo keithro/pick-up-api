@@ -28,7 +28,7 @@ app.get('/', (req, res)=>{
   // res.redirect('/events')
 });
 
-app.use('/users', usersController);
+app.use('/user', usersController);
 app.use('/events', eventsController);
 app.use('/auth', authController);
 

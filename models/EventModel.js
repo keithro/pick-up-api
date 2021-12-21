@@ -1,8 +1,12 @@
+const { Schema } = require('mongoose');
 const mongoose = require('../db/connection');
 
 const eventSchema = new mongoose.Schema({
-  // Add user's id after model is created
-  creator: String,
+  creator: {
+    type: Schema.Types.ObjectId,
+    // Might need to use 'users' here?
+    ref: 'User'
+  },
   description:   {
 		type: String,
 		required: true,

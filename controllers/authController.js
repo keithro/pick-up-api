@@ -16,11 +16,8 @@ const { JWT_SECRET_KEY } = config;
 // GET AUTHORIZE USER (private)
 router.get('/', auth, async (req, res) => {
   try {
-    console.log('USER FROM MIDDLEWARE: ' ,req.user);
-    console.log('USER ID FROM MIDDLEWARE: ' ,req.user.id);
-    // using the user from the jwt decoded in middleware
+    // using the user info from the jwt decoded in middleware (minus the pw field)
     const user = await User.findById(req.user.id).select('-password');
-    console.log('FOUND USER: ' ,user);
     return res.json(user);
   } catch (err) {
     console.log(err.message);
@@ -33,7 +30,7 @@ router.get('/', auth, async (req, res) => {
 router.post('/register', [
   check('username', 'Name is required').not().isEmpty(),
   check('email', 'Please include a valid email').isEmail(),
-  check('password', 'Password must be 8 or more characters').isLength({ min: 6 })
+  check('password', 'Password must be 8 or more characters').isLength({ min: 8 })
 ], async (req, res) => {
   const { username, email, password, passwordCheck } = req.body;
   
@@ -43,7 +40,7 @@ router.post('/register', [
     return res.status(400).json({ errors: errors.array() });
   };
   if (password !== passwordCheck) {
-    return res.status(400).json({ errors: { msg: 'Invalid user or password'} });
+    return res.status(400).json({ errors: { msg: 'Passwords do not match', param: 'password'} });
   }
 
   try {
@@ -51,7 +48,7 @@ router.post('/register', [
     const foundUserName = await User.findOne({ username: username });
     const foundUser = await User.findOne({ email: email.toLowerCase() });
     if (foundUser || foundUserName) {
-      return res.status(400).json({ errors: { msg: 'User already exists'} });
+      return res.status(400).json({ errors: { msg: 'User already exists', param: "username" } });
     };
 
     // Get gravatar if exist or default image (size, rating, default)
@@ -88,7 +85,7 @@ router.post('/register', [
 // LOGIN AND GET TOKEN
 router.post('/login', [
   check('email', 'Please include a valid email').isEmail(),
-  check('password', 'Password must be 8 or more characters').isLength({ min: 6 })
+  check('password', 'Password must be 8 or more characters').isLength({ min: 8 })
 ], async (req, res) => {
   const { email, password } = req.body;
   
@@ -120,7 +117,7 @@ router.post('/login', [
     };
     jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
       if (err) throw err;
-      console.log('Success!!!!!!!!!!!!!!!!!!!!!')
+      console.log('Success!')
       res.status(201).json({ token })
     })
   
