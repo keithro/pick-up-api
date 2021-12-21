@@ -37,3 +37,10 @@ app.use('/auth', authController);
 app.listen(PORT, () => {
   console.log(`Express server listening on port ${PORT}`);
 });
+
+
+app.set("port", process.env.PORT || 4000);
+
+app.listen(app.get("port"), () => {
+  console.log(`✅ PORT: ${app.get("port")} 🌟`);
+});
