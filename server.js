@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const morgan = require('morgan');
+// const morgan = require('morgan');
 const cors = require('cors');
 
 const usersController = require('./controllers/usersController');
@@ -19,7 +19,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 // Parses incoming JSON-encoded data from req.body:
 app.use(express.json());
-app.use(morgan('combined'));
+// app.use(morgan('combined'));
 
 
 // ROUTES
