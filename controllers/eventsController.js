@@ -125,13 +125,67 @@ router.delete('/:id', auth, async (req, res) => {
 // 	res.status(200).json({ status: 200, deletedEvent: deletedEvent });
 // });
 
-// LIKE EVENT
+// LIKE/UNLIKE EVENT
+router.put('/like/:id', auth, async (req, res) => {
+  try {
+    const foundEvent = await Event.findById(req.params.id);
+    console.log('EVENT LIKES ARRAY: ', foundEvent.likes)
+    console.log('REQUESTING USER ID: ', req.user.id);
+    
+    const index = foundEvent.likes.findIndex(like => {
+      console.log('CURRENT LIKE USER ID: ', like.user.toString());
+      return like.user.toString() === req.user.id.toString();
+    });
 
+    console.log('INDEX: ', index);
+
+    if (index === -1) {
+      // not in array
+      console.log('we are adding!')
+      foundEvent.likes.push({ user: req.user.id });
+    } else {
+      // is already in array
+      console.log('we are deleting!')
+      foundEvent.likes.splice(index, 1);
+    }
+
+    const event = await foundEvent.save();
+
+    res.status(200).json({ event: event });
+  } catch (err) {
+    console.log('Error: ', err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: { msg: 'Event not found' } });
+    }
+    res.status(500).json({ errors: { msg: 'Server error' } });
+  }
+});
 
 // ADD COMMENT TO EVENT
+// router.put('/comment/:id', auth, async (req, res) => {
+//   try {
+    
 
+//   } catch (err) {
+//     console.log('Error: ', err.message);
+//     if(err.kind === 'ObjectId') {
+//       return res.status(404).json({ errors: { msg: 'Event not found' } });
+//     }
+//     res.status(500).json({ errors: { msg: 'Server error' } });
+//   }
+// });
 
 // JOIN EVENT
+// router.put('/join/:id', auth, async (req, res) => {
+//   try {
 
+//   } catch (err) {
+//     console.log('Error: ', err.message);
+//     if(err.kind === 'ObjectId') {
+//       return res.status(404).json({ errors: { msg: 'Event not found' } });
+//     }
+//     res.status(500).json({ errors: { msg: 'Server error' } });
+//   }
+// });
 
 module.exports = router;

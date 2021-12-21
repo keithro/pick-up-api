@@ -48,12 +48,12 @@ const eventSchema = new mongoose.Schema({
   ],
   going: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' }
+      user: { type: Schema.Types.ObjectId, ref: 'user' }
     }
   ],
   likes: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'User' }
+      user: { type: Schema.Types.ObjectId, ref: 'user' }
     }
   ],
 }, { timestamps: true });
