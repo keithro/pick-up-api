@@ -17,5 +17,6 @@
 .env.test.local
 .env.production.local
 /old-files
+/config
 
 npm-debug.log*

@@ -7,11 +7,9 @@ const config = require('config');
 const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 const User = require('../models/UserModel');
+require('dotenv').config();
 
-const { JWT_SECRET_KEY } = config;
-// REFACTOR JWT SECRET KEY?
-// // use .env file, pass in process.env.JWT_SECRET_KEY, and add:
-// require('dotenv').config();
+// const { JWT_SECRET_KEY } = config;
 
 // GET AUTHORIZE USER (private)
 router.get('/', auth, async (req, res) => {
@@ -70,7 +68,7 @@ router.post('/register', [
         admin: newUser.admin
       }
     };
-    jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
       if (err) throw err;
       res.status(201).json({ token })
     })
@@ -115,7 +113,7 @@ router.post('/login', [
         admin: foundUser.admin
       }
     };
-    jwt.sign(payload, JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
       if (err) throw err;
       console.log('Success!')
       res.status(201).json({ token })

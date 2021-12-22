@@ -34,9 +34,9 @@ app.use('/auth', authController);
 
 
 // ACTIVATE THE SERVER TO LISTEN ON THE PORT
-app.listen(PORT, () => {
-  console.log(`Express server listening on port ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Express server listening on port ${PORT}`);
+// });
 
 
 app.set("port", process.env.PORT || 4000);

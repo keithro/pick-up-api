@@ -1,5 +1,8 @@
 # Pick-up API
 
+[live link](https://pick-up-api.herokuapp.com)
+(live link)[https://pick-up-api.herokuapp.com]
+
 ### Routes
 | Type | Route | Name | Description | Protected/Private |
 | --- | :---: |  :---: | :---: | :---: |
