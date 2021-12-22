@@ -42,10 +42,10 @@ router.post('/register', [
   }
 
   try {
-    // Check if user exists
-    const foundUserName = await User.findOne({ username: username });
+    // Check if user exists (no longer checking if username is unique)
+    // const foundUserName = await User.findOne({ username: username });
     const foundUser = await User.findOne({ email: email.toLowerCase() });
-    if (foundUser || foundUserName) {
+    if (foundUser) {
       return res.status(400).json({ errors: { msg: 'User already exists', param: "username" } });
     };
 
@@ -54,6 +54,13 @@ router.post('/register', [
 
     // Create new User
     newUser = new User ({ username, email: email.toLowerCase(), avatar });
+
+    // Check if admin
+    if (email === process.env.ADMIN_EMAIL) {
+      console.log('Wooo! You are an admin!')
+      newUser.admin =true;
+    }
+    // newUser.admin = email === process.env.ADMIN_EMAIL;
 
     // Encrypt password & add to user
     const salt = await bcrypt.genSalt(12);

@@ -24,7 +24,7 @@ app.use(express.json());
 
 // ROUTES
 app.get('/', (req, res)=>{
-  res.send('<h1>HOLA MUNDO!</h1>');
+  res.send('pick-up api');
   // res.redirect('/events')
 });
 
