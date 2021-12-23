@@ -10,7 +10,7 @@ const User = require('../models/UserModel');
 router.get('/', auth, async (req, res) => {
   try {
     // Get events and sort with by most recent
-    const events = await Event.find().sort({ date: -1 });
+    const events = await Event.find().sort({ eventDate: -1 });
     res.status(200).json({ events: events });
   } catch (err) {
     console.log('Error: ', err.message);
