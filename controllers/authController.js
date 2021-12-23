@@ -75,7 +75,7 @@ router.post('/register', [
         admin: newUser.admin
       }
     };
-    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '7d' }, (err, token) => {
       if (err) throw err;
       res.status(201).json({ token })
     })
@@ -120,7 +120,7 @@ router.post('/login', [
         admin: foundUser.admin
       }
     };
-    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '14d' }, (err, token) => {
+    jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '7d' }, (err, token) => {
       if (err) throw err;
       console.log('Success!')
       res.status(201).json({ token })

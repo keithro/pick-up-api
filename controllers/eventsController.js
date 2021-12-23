@@ -149,7 +149,7 @@ router.put('/attend/:id', auth, async (req, res) => {
     // console.log('REQUESTING USER ID: ', req.user.id);
     
     const index = foundEvent.going.findIndex(elem => {
-      console.log('CURRENT GOING ARRAY USER ID: ', elem.user.toString());
+      // console.log('CURRENT GOING ARRAY USER ID: ', elem.user.toString());
       return elem.user.toString() === req.user.id.toString();
     });
 
