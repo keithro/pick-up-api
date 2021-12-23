@@ -17,6 +17,7 @@ const eventSchema = new mongoose.Schema({
 		type: String,
 		// required: true,
     maxLength: 1000,
+    default: ''
 	},
   eventDate: {
     type: String,
@@ -26,7 +27,10 @@ const eventSchema = new mongoose.Schema({
     type: Date, 
     default: Date.now 
   },
-  location: String,
+  location: {
+    type: String,
+    default: ''
+  },
   sport: {
     type: String,
     required: true
@@ -48,7 +52,8 @@ const eventSchema = new mongoose.Schema({
   ],
   going: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'user' }
+      user: { type: Schema.Types.ObjectId, ref: 'user' },
+      avatar: { type: String },
     }
   ],
   likes: [

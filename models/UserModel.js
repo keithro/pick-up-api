@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-  followings: {
+  following: {
     type: Array,
     default: [],
   },
@@ -42,10 +42,12 @@ const userSchema = new mongoose.Schema({
   desc: {
     type: String,
     max: 50,
+    default: ''
   },
   location: {
     type: String,
     max: 50,
+    default: ''
   },
 }, { timestamps: true });
 

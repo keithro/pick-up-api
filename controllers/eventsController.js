@@ -18,10 +18,6 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-// router.get('/', async (req, res) => {
-//   const events = await Event.find({});
-//   res.status(200).json({ status: 200, events: events });
-// });
 
 // CREATE NEW EVENT
 router.post('/',[auth, [
@@ -34,7 +30,7 @@ router.post('/',[auth, [
   };
 
   try {
-    // Get user from token
+    // Get user from token id
     const user = await User.findById(req.user.id).select('-password');
 
     const newEvent = new Event({
@@ -60,10 +56,6 @@ router.post('/',[auth, [
   }
 });
 
-// router.event('/', async (req, res) => {
-//   const newEvent = await Event.create(req.body);
-//   res.status(201).json({ status: 200, newEvent: newEvent });
-// });
 
 // GET ONE EVENT BY ID
 router.get('/:id', auth, async (req, res) => {
@@ -83,16 +75,6 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// router.get('/:id', async (req, res) => {
-//   const event = await Event.findById(req.params.id);
-//   res.status(200).json({ status: 200, event: event })
-// });
-
-// // UPDATE EVENT - Refactor & add validation if you add this functionality later
-// router.put('/:id', async (req, res) => {
-// 	const updatedEvent = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true });
-// 	res.status(200).json({ status: 200, event: updatedEvent });
-// });
 
 // DELETE EVENT
 router.delete('/:id', auth, async (req, res) => {
@@ -119,33 +101,26 @@ router.delete('/:id', auth, async (req, res) => {
   }
 });
 
-// router.delete('/:id', async (req, res) => {
-// 	const deletedEvent = await Event.findByIdAndDelete(req.params.id);
-//   console.log(deletedEvent)
-// 	res.status(200).json({ status: 200, deletedEvent: deletedEvent });
-// });
 
 // LIKE/UNLIKE EVENT
 router.put('/like/:id', auth, async (req, res) => {
   try {
     const foundEvent = await Event.findById(req.params.id);
-    console.log('EVENT LIKES ARRAY: ', foundEvent.likes)
-    console.log('REQUESTING USER ID: ', req.user.id);
+    // console.log('EVENT LIKES ARRAY: ', foundEvent.likes)
+    // console.log('REQUESTING USER ID: ', req.user.id);
     
     const index = foundEvent.likes.findIndex(like => {
-      console.log('CURRENT LIKE USER ID: ', like.user.toString());
+      // console.log('CURRENT LIKE USER ID: ', like.user.toString());
       return like.user.toString() === req.user.id.toString();
     });
 
-    console.log('INDEX: ', index);
+    // console.log('INDEX: ', index);
 
     if (index === -1) {
-      // not in array
-      console.log('we are adding!')
+      // console.log('we are adding!')
       foundEvent.likes.push({ user: req.user.id });
     } else {
-      // is already in array
-      console.log('we are deleting!')
+      // console.log('we are deleting!')
       foundEvent.likes.splice(index, 1);
     }
 
@@ -161,6 +136,46 @@ router.put('/like/:id', auth, async (req, res) => {
   }
 });
 
+
+// JOIN EVENT
+router.put('/attend/:id', auth, async (req, res) => {
+  try {
+    // Get user from token id
+    const user = await User.findById(req.user.id).select('-password');
+    // console.log('FOUND USER: ', req.user);
+
+    const foundEvent = await Event.findById(req.params.id);
+    // console.log('EVENT GOING ARRAY: ', foundEvent.going)
+    // console.log('REQUESTING USER ID: ', req.user.id);
+    
+    const index = foundEvent.going.findIndex(elem => {
+      console.log('CURRENT GOING ARRAY USER ID: ', elem.user.toString());
+      return elem.user.toString() === req.user.id.toString();
+    });
+
+    // console.log('INDEX: ', index);
+
+    if (index === -1) {
+      // console.log('we are adding!')
+      foundEvent.going.push({ user: req.user.id, avatar: user.avatar });
+    } else {
+      // console.log('we are deleting!')
+      foundEvent.going.splice(index, 1);
+    }
+
+    const event = await foundEvent.save();
+
+    res.status(200).json({ event: event });
+  } catch (err) {
+    console.log('Error: ', err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: { msg: 'Event not found' } });
+    }
+    res.status(500).json({ errors: { msg: 'Server error' } });
+  }
+});
+
+
 // ADD COMMENT TO EVENT
 // router.put('/comment/:id', auth, async (req, res) => {
 //   try {
@@ -175,17 +190,5 @@ router.put('/like/:id', auth, async (req, res) => {
 //   }
 // });
 
-// JOIN EVENT
-// router.put('/join/:id', auth, async (req, res) => {
-//   try {
-
-//   } catch (err) {
-//     console.log('Error: ', err.message);
-//     if(err.kind === 'ObjectId') {
-//       return res.status(404).json({ errors: { msg: 'Event not found' } });
-//     }
-//     res.status(500).json({ errors: { msg: 'Server error' } });
-//   }
-// });
 
 module.exports = router;
