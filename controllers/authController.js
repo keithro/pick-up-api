@@ -50,7 +50,7 @@ router.post('/register', [
     };
 
     // Get gravatar if exist or default image (size, rating, default)
-    const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'retro' });
+    const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mp' });
 
     // Create new User
     newUser = new User ({ username, email: email.toLowerCase(), avatar });
