@@ -1,3 +1,4 @@
+const { Router } = require('express');
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
@@ -76,6 +77,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 
+
 // DELETE EVENT
 router.delete('/:id', auth, async (req, res) => {
   try {
@@ -85,9 +87,11 @@ router.delete('/:id', auth, async (req, res) => {
       res.status(404).json({ errors: { msg: 'Event not found' } });
     }
 
+    // TODO: TEST THIS AGAIN TO MAKE SURE IT ONLY WORKS IF ID MATCHES (might need to add ".toString()")
+
     // Check if user is event owner
     if(event.creator.toString() !== req.user.id) {
-      res.status(404).json({ errors: { msg: 'User not authorized' } });
+      return res.status(401).json({ errors: { msg: 'User not authorized' } });
     }
 
     await event.remove();
@@ -177,18 +181,74 @@ router.put('/attend/:id', auth, async (req, res) => {
 
 
 // ADD COMMENT TO EVENT
-// router.put('/comment/:id', auth, async (req, res) => {
-//   try {
+router.post('/comment/:id',[auth, [
+  check('text', 'Text is required').not().isEmpty(),
+]] , async (req, res) => {
+  const errors = validationResult(req);
+  if(!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  };
+
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    const foundEvent = await Event.findById(req.params.id);
+
+    const newComment = {
+      userID: req.user.id,
+      text: req.body.text,
+      name: user.username,
+      avatar:user.avatar
+    };
     
+    foundEvent.comments.push(newComment);
+    const event = await foundEvent.save();
 
-//   } catch (err) {
-//     console.log('Error: ', err.message);
-//     if(err.kind === 'ObjectId') {
-//       return res.status(404).json({ errors: { msg: 'Event not found' } });
-//     }
-//     res.status(500).json({ errors: { msg: 'Server error' } });
-//   }
-// });
+    res.status(201).json({ event: event });
 
+  } catch (err) {
+    console.log('Error: ', err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: { msg: 'Event not found' } });
+    }
+    res.status(500).json({ errors: { msg: 'Server error' } });
+  }
+});
+
+
+// DELETE COMMENT TO EVENT
+router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
+  try {
+    const foundEvent = await Event.findById(req.params.id);
+    // const foundComment = foundEvent.comments.find(comment => {
+    //   return comment.id === req.params.comment_id;
+    // });
+    const index = foundEvent.comments.findIndex(comment => {
+      return comment.id === req.params.comment_id;
+    });
+
+    // If no comment send back 404 response
+    if (index === -1) {
+      return res.status(404).json({ errors: { msg: 'Comment not found' } })
+    }
+
+    // Check if user is comment owner
+    if (foundEvent.comments[index].userID.toString() !== req.user.id) {
+      return res.status(401).json({ errors: { msg: 'User not authorized' } });
+    }
+
+    // Delete comment and return saved event
+    foundEvent.comments.splice(index, 1);
+    const event = await foundEvent.save();
+  
+    return res.status(201).json({ event: event });
+
+  } catch (err) {
+    console.log('Error: ', err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: { msg: 'Event not found' } });
+    }
+    res.status(500).json({ errors: { msg: 'Server error' } });
+  }
+});
 
 module.exports = router;

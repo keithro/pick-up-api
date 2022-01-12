@@ -43,7 +43,7 @@ const eventSchema = new mongoose.Schema({
   creatorAvatar: String,
   comments: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'user' },
+      userID: { type: Schema.Types.ObjectId, ref: 'user' },
       text: { type: String, required: true },
       name: { type: String },
       avatar: { type: String },
