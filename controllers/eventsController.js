@@ -121,10 +121,8 @@ router.put('/like/:id', auth, async (req, res) => {
     // console.log('INDEX: ', index);
 
     if (index === -1) {
-      // console.log('we are adding!')
       foundEvent.likes.push({ user: req.user.id });
     } else {
-      // console.log('we are deleting!')
       foundEvent.likes.splice(index, 1);
     }
 
@@ -144,7 +142,7 @@ router.put('/like/:id', auth, async (req, res) => {
 // JOIN EVENT
 router.put('/attend/:id', auth, async (req, res) => {
   try {
-    // Get user from token id
+    // Get user using id from token
     const user = await User.findById(req.user.id).select('-password');
     // console.log('FOUND USER: ', req.user);
 
@@ -160,10 +158,12 @@ router.put('/attend/:id', auth, async (req, res) => {
     // console.log('INDEX: ', index);
 
     if (index === -1) {
-      // console.log('we are adding!')
-      foundEvent.going.push({ user: req.user.id, avatar: user.avatar });
+      foundEvent.going.push({
+        user: req.user.id,
+        username: user.username,
+        avatar: user.avatar,
+      });
     } else {
-      // console.log('we are deleting!')
       foundEvent.going.splice(index, 1);
     }
 

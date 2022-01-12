@@ -39,8 +39,14 @@ const eventSchema = new mongoose.Schema({
     type: String,
     default: 'any'
   },
-  creatorName: String,
-  creatorAvatar: String,
+  creatorName: {
+    type: String,
+    required: true
+  },
+  creatorAvatar: {
+    type: String,
+    required: true
+  },
   comments: [
     {
       userID: { type: Schema.Types.ObjectId, ref: 'user' },
@@ -53,6 +59,7 @@ const eventSchema = new mongoose.Schema({
   going: [
     {
       user: { type: Schema.Types.ObjectId, ref: 'user' },
+      username: { type: String },
       avatar: { type: String },
     }
   ],

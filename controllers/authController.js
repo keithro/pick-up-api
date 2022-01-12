@@ -50,7 +50,7 @@ router.post('/register', [
     };
 
     // Get gravatar if exist or default image (size, rating, default)
-    const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mp' });
+    const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'retro' });
 
     // Create new User
     newUser = new User ({ username, email: email.toLowerCase(), avatar });
@@ -82,6 +82,9 @@ router.post('/register', [
   
   } catch (err) {
     console.log('Error: ', err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: { msg: 'Event not found' } });
+    }
     res.status(500).json({ errors: { msg: 'Server error' } });
   }
 });
