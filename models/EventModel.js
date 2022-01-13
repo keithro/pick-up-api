@@ -1,10 +1,10 @@
-const { Schema } = require('mongoose');
+// const { Schema } = require('mongoose');
 const mongoose = require('../db/connection');
-
+const { Schema } = mongoose;
 
     // Might need to change refs to 'users' here?
-const eventSchema = new mongoose.Schema({
-  creator: {
+const eventSchema = new Schema({
+  creatorID: {
     type: Schema.Types.ObjectId,
     ref: 'user'
   },
@@ -49,7 +49,7 @@ const eventSchema = new mongoose.Schema({
   },
   comments: [
     {
-      userID: { type: Schema.Types.ObjectId, ref: 'user' },
+      userID: { type: Schema.Types.ObjectId, ref: 'User' },
       text: { type: String, required: true },
       name: { type: String },
       avatar: { type: String },
@@ -58,14 +58,14 @@ const eventSchema = new mongoose.Schema({
   ],
   going: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'user' },
-      username: { type: String },
+      userID: { type: Schema.Types.ObjectId, ref: 'User' },
+      name: { type: String },
       avatar: { type: String },
     }
   ],
   likes: [
     {
-      user: { type: Schema.Types.ObjectId, ref: 'user' }
+      userID: { type: Schema.Types.ObjectId, ref: 'User' }
     }
   ],
 }, { timestamps: true });

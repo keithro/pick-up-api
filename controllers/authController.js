@@ -26,11 +26,11 @@ router.get('/', auth, async (req, res) => {
 
 // CREATE NEW USER AND GET TOKEN (public)
 router.post('/register', [
-  check('username', 'Name is required').not().isEmpty(),
+  check('name', 'Name is required').not().isEmpty(),
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password must be 8 or more characters').isLength({ min: 8 })
 ], async (req, res) => {
-  const { username, email, password, passwordCheck } = req.body;
+  const { name, email, password, passwordCheck } = req.body;
   
   // Validate user data and send errors array if any.
   const errors = validationResult(req);
@@ -42,18 +42,17 @@ router.post('/register', [
   }
 
   try {
-    // Check if user exists (no longer checking if username is unique)
-    // const foundUserName = await User.findOne({ username: username });
+    // Check if user exists (no longer checking if name is unique)
     const foundUser = await User.findOne({ email: email.toLowerCase() });
     if (foundUser) {
-      return res.status(400).json({ errors: { msg: 'User already exists', param: "username" } });
+      return res.status(400).json({ errors: { msg: 'User already exists', param: "name" } });
     };
 
     // Get gravatar if exist or default image (size, rating, default)
     const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'retro' });
 
     // Create new User
-    newUser = new User ({ username, email: email.toLowerCase(), avatar });
+    newUser = new User ({ name, email: email.toLowerCase(), avatar });
 
     // Check if admin
     newUser.admin = email === process.env.ADMIN_EMAIL;
@@ -125,7 +124,6 @@ router.post('/login', [
     };
     jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '7d' }, (err, token) => {
       if (err) throw err;
-      console.log('Success!')
       res.status(201).json({ token })
     })
   

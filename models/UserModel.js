@@ -1,7 +1,8 @@
 const mongoose = require('../db/connection');
+const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
-  username: {
+  name: {
     type: String,
     require: true,
     min: 6,
@@ -31,10 +32,14 @@ const userSchema = new mongoose.Schema({
     type: Array,
     default: [],
   },
-  invites: {
-    type: Array,
-    default: [],
-  },
+  invites: [
+    {
+      eventID: { type: Schema.Types.ObjectId, ref: 'Event' },
+      title: { type: String, required: true },
+      creatorName: { type: String },
+      date: { type: Date, default: Date.now },
+    }
+  ],
   admin: {
     type: Boolean,
     default: false,

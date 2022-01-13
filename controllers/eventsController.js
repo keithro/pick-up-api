@@ -11,7 +11,7 @@ const User = require('../models/UserModel');
 router.get('/', auth, async (req, res) => {
   try {
     // Get events and sort with by most recent
-    const events = await Event.find().sort({ eventDate: -1 });
+    const events = await Event.find().sort({ createdDate: 'descending', eventDate: 'descending' });
     res.status(200).json({ events: events });
   } catch (err) {
     console.log('Error: ', err.message);
@@ -36,14 +36,14 @@ router.post('/',[auth, [
 
     const newEvent = new Event({
       // couldn't id also come from user.id?
-      creator: req.user.id,
+      creatorID: req.user.id,
       title: req.body.title,
       details: req.body.details,
       eventDate: req.body.eventDate,
       location: req.body.location,
       sport: req.body.sport,
       skillLevel: req.body.skill,
-      creatorName: user.username,
+      creatorName: user.name,
       creatorAvatar: user.avatar
     });
     
@@ -90,7 +90,7 @@ router.delete('/:id', auth, async (req, res) => {
     // TODO: TEST THIS AGAIN TO MAKE SURE IT ONLY WORKS IF ID MATCHES (might need to add ".toString()")
 
     // Check if user is event owner
-    if(event.creator.toString() !== req.user.id) {
+    if(event.creatorID.toString() !== req.user.id) {
       return res.status(401).json({ errors: { msg: 'User not authorized' } });
     }
 
@@ -109,19 +109,16 @@ router.delete('/:id', auth, async (req, res) => {
 // LIKE/UNLIKE EVENT
 router.put('/like/:id', auth, async (req, res) => {
   try {
+    console.log('Params: ', req.params)
     const foundEvent = await Event.findById(req.params.id);
-    // console.log('EVENT LIKES ARRAY: ', foundEvent.likes)
-    // console.log('REQUESTING USER ID: ', req.user.id);
+    console.log('foundEvent: ', foundEvent)
     
     const index = foundEvent.likes.findIndex(like => {
-      // console.log('CURRENT LIKE USER ID: ', like.user.toString());
-      return like.user.toString() === req.user.id.toString();
+      return like.userID.toString() === req.user.id.toString();
     });
 
-    // console.log('INDEX: ', index);
-
     if (index === -1) {
-      foundEvent.likes.push({ user: req.user.id });
+      foundEvent.likes.push({ userID: req.user.id });
     } else {
       foundEvent.likes.splice(index, 1);
     }
@@ -144,23 +141,17 @@ router.put('/attend/:id', auth, async (req, res) => {
   try {
     // Get user using id from token
     const user = await User.findById(req.user.id).select('-password');
-    // console.log('FOUND USER: ', req.user);
 
     const foundEvent = await Event.findById(req.params.id);
-    // console.log('EVENT GOING ARRAY: ', foundEvent.going)
-    // console.log('REQUESTING USER ID: ', req.user.id);
     
     const index = foundEvent.going.findIndex(elem => {
-      // console.log('CURRENT GOING ARRAY USER ID: ', elem.user.toString());
-      return elem.user.toString() === req.user.id.toString();
+      return elem.userID.toString() === req.user.id.toString();
     });
-
-    // console.log('INDEX: ', index);
 
     if (index === -1) {
       foundEvent.going.push({
-        user: req.user.id,
-        username: user.username,
+        userID: req.user.id,
+        name: user.name,
         avatar: user.avatar,
       });
     } else {
@@ -196,7 +187,7 @@ router.post('/comment/:id',[auth, [
     const newComment = {
       userID: req.user.id,
       text: req.body.text,
-      name: user.username,
+      name: user.name,
       avatar:user.avatar
     };
     
@@ -219,9 +210,7 @@ router.post('/comment/:id',[auth, [
 router.delete('/comment/:id/:comment_id', auth, async (req, res) => {
   try {
     const foundEvent = await Event.findById(req.params.id);
-    // const foundComment = foundEvent.comments.find(comment => {
-    //   return comment.id === req.params.comment_id;
-    // });
+    
     const index = foundEvent.comments.findIndex(comment => {
       return comment.id === req.params.comment_id;
     });
