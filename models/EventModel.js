@@ -37,7 +37,8 @@ const eventSchema = new Schema({
   },
   skillLevel: {
     type: String,
-    default: 'any'
+    default: 'All',
+    enum: ['All', 'Beginner', 'Intermediate', 'Advanced']
   },
   creatorName: {
     type: String,

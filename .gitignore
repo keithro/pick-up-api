@@ -8,6 +8,7 @@
 
 # production
 /build
+/config
 
 # misc
 .DS_Store
@@ -16,7 +17,6 @@
 .env.development.local
 .env.test.local
 .env.production.local
-/old-files
-/config
+notes.md
 
 npm-debug.log*
