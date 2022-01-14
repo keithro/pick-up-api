@@ -1,7 +1,7 @@
 # Pick-up API
 
 [live link](https://pick-up-api.herokuapp.com)
-(live link)[https://pick-up-api.herokuapp.com]
+[live api link][https://pick-up-api.herokuapp.com]
 
 ### Routes
 | Type | Route | Name | Description | Protected/Private |
@@ -22,3 +22,8 @@
 
 Todo:
 - add param to error msg so you can add conditional styling to form labels
+
+### Heroku Deployment
+```
+git push heroku main
+```

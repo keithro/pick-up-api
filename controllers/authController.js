@@ -55,11 +55,8 @@ router.post('/register', [
     newUser = new User ({ name, email: email.toLowerCase(), avatar });
 
     // Check if admin
-    newUser.admin = email === process.env.ADMIN_EMAIL;
-    // if (email === process.env.ADMIN_EMAIL) {
-    //   console.log('Wooo! You are an admin!')
-    //   newUser.admin =true;
-    // }
+    const isAdmin = email === process.env.ADMIN_EMAIL
+    newUser.admin = isAdmin;
 
     // Encrypt password & add to user
     const salt = await bcrypt.genSalt(12);

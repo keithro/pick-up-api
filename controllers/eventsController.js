@@ -109,9 +109,7 @@ router.delete('/:id', auth, async (req, res) => {
 // LIKE/UNLIKE EVENT
 router.put('/like/:id', auth, async (req, res) => {
   try {
-    console.log('Params: ', req.params)
     const foundEvent = await Event.findById(req.params.id);
-    console.log('foundEvent: ', foundEvent)
     
     const index = foundEvent.likes.findIndex(like => {
       return like.userID.toString() === req.user.id.toString();
